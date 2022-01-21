@@ -1,1 +1,78 @@
-// TODO
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 3.375rem 2rem;
+
+}
+
+.posts {
+  margin-bottom: 3.375rem;
+  // max-width: 720px;
+  // margin: auto 0;
+
+
+  a{
+    display: block;
+
+    & + a {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+    }
+
+    strong {
+        display: block;
+        font-size: 1.75rem;
+        margin-top: 1rem;
+        line-height: 2rem;
+
+        transition: color .2s;
+    }
+
+    p {
+      color: var(--body);
+      font-size: 1.125rem;
+      margin-top: 0.5rem;
+      line-height: 1.625rem;
+    }
+
+    &:hover strong{
+        color: var(--highlight);
+    }
+
+    .info {
+      display: flex;
+      align-items: baseline;
+      margin-top: 1rem;
+
+      img {
+        margin-top: 0.2rem;
+        position: absolute;
+      }
+
+      time {
+        margin-left: 26px;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        color: var(--info);
+      }
+
+      p {
+        margin-left: 0.625rem;
+        color: var(--info);
+        font-size: 0.875rem;
+        line-height: 0.875rem;
+      }
+    }
+  }
+}
+
+.keepRolling {
+  font-size: 1.125rem;
+  color: var(--highlight);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
