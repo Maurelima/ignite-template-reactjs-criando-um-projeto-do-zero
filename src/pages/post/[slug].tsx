@@ -7,6 +7,7 @@ import { FiCalendar, FiClock, FiUser } from 'react-icons/fi';
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import Header from '../../components/Header';
 
 // import { client, prismic } from '../../services/prismic';
@@ -52,6 +53,20 @@ export default function Post({ post }: PostProps) {
     return acc + min;
   }, 0);
 
+  useEffect(() => {
+    const script = document.createElement('script');
+    const anchor = document.getElementById('inject-comments-for-uterances');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute(
+      'repo',
+      'Maurelima/ignite-template-reactjs-criando-um-projeto-do-zero'
+    );
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment :speech_balloon:');
+    script.setAttribute('theme', 'github-dark');
+    script.setAttribute('crossorigin', 'anonymous');
+    anchor.appendChild(script);
+  }, []);
   if (router.isFallback) {
     return <p>Carregando...</p>;
   }
@@ -95,6 +110,9 @@ export default function Post({ post }: PostProps) {
               </div>
             );
           })}
+        </section>
+        <section className={styles.comments}>
+          <div id="inject-comments-for-uterances" />
         </section>
       </main>
     </>
