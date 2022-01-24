@@ -2,13 +2,19 @@
   max-width: 1120px;
   margin: 0 auto;
   padding: 3.375rem 2rem;
+}
 
+.logo {
+  max-width: 720px;
+  margin-top: 2rem;
+  margin: auto;
+  padding-bottom: 2rem;
 }
 
 .posts {
+  max-width: 720px;
+  margin: auto;
   margin-bottom: 3.375rem;
-  // max-width: 720px;
-  // margin: auto 0;
 
 
   a{
@@ -39,40 +45,39 @@
         color: var(--highlight);
     }
 
-    .info {
+    ul {
+      list-style: none;
+      margin-top:1.5rem;
       display: flex;
-      align-items: baseline;
-      margin-top: 1rem;
 
-      img {
-        margin-top: 0.2rem;
-        position: absolute;
-      }
+      & li {
+        font-size:0.875rem;
 
-      time {
-        margin-left: 26px;
-        font-size: 0.875rem;
-        display: flex;
-        align-items: center;
-        color: var(--info);
-      }
+        & svg {
+          margin-right: 0.5rem;
+        }
 
-      p {
-        margin-left: 0.625rem;
-        color: var(--info);
-        font-size: 0.875rem;
-        line-height: 0.875rem;
+        & + li {
+          margin-left: 1.625rem;
+        }
       }
     }
   }
 }
 
 .keepRolling {
-  font-size: 1.125rem;
-  color: var(--highlight);
+  max-width: 720px;
+  margin: auto;
   cursor: pointer;
 
-  &:hover {
-    text-decoration: underline;
+  button {
+    font-size: 1.125rem;
+    color: var(--highlight);
+    background: transparent;
+    border: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }

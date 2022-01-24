@@ -1,9 +1,16 @@
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
+import { useState } from 'react';
 
+import { FiCalendar } from 'react-icons/fi';
+// import { client, prismic } from '../services/prismic';
+import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
+
 import styles from './home.module.scss';
 
 interface Post {
@@ -25,45 +32,106 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home() {
+export default function Home({ postsPagination }: HomeProps) {
+  const [posts, setPosts] = useState<Post[]>(postsPagination.results);
+  const [nextPage, setNextPage] = useState<string>(postsPagination.next_page);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  async function getNextPage() {
+    if (currentPage !== 1 && nextPage === null) return;
+
+    const prismicResponse = await fetch(nextPage).then(response =>
+      response.json()
+    );
+    setNextPage(prismicResponse.next_page);
+    setCurrentPage(prismicResponse.page);
+
+    const newPosts = prismicResponse.results.map(post => {
+      return {
+        uid: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        },
+      };
+    });
+
+    setPosts([...posts, ...newPosts]);
+  }
+
   return (
     <main className={styles.container}>
+      <div className={styles.logo}>
+        <img src="./Logo.svg" alt="logo" />
+      </div>
       <div className={styles.posts}>
-        <Link href="/posts">
-          <a>
-            <strong>Como utilizar Hooks</strong>
-            <p>Pensando em sincronização em vez de ciclos de vida.</p>
-            <div className={styles.info}>
-              <img src="./calendar.png" alt="calendar" />
-              <time>15 Mar 2021</time>
-              <p>Joseph Oliveira</p>
-            </div>
-          </a>
-        </Link>
-        <Link href="/posts">
-          <a>
-            <strong>Criando um app CRA do zero</strong>
-            <p>
-              Tudo sobre como criar a sua primeira aplicação utilizando Create
-              React App
-            </p>
-            <div className={styles.info}>
-              <time>19 Abr 2021</time>
-              <p>Danilo Vieira</p>
-            </div>
-          </a>
-        </Link>
+        {posts.map(post => {
+          return (
+            <Link href={`/post/${post.uid}`} key={post.uid}>
+              <a>
+                <strong>{post.data.title}</strong>
+                <p>{post.data.subtitle}</p>
+                <ul>
+                  <li>
+                    <FiCalendar />
+                    {format(
+                      new Date(post.first_publication_date),
+                      'dd MMM yyyy',
+                      {
+                        locale: ptBR,
+                      }
+                    )}
+                  </li>
+                  <li>{post.data.author}</li>
+                </ul>
+              </a>
+            </Link>
+          );
+        })}
       </div>
-      <div className={styles.keepRolling}>
-        <a>Carregar mais posts</a>
-      </div>
+      {nextPage && (
+        <div className={styles.keepRolling}>
+          <a>
+            <button type="button" onClick={() => getNextPage()}>
+              Carregar mais posts
+            </button>
+          </a>
+        </div>
+      )}
     </main>
   );
 }
 
-// export const getStaticProps = async () => {
-//   // const prismic = getPrismicClient();
-//   // const postsResponse = await prismic.query(TODO);
+export const getStaticProps: GetStaticProps = async () => {
+  const prismic = getPrismicClient();
+  const responsePosts = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')],
+    {
+      fetch: ['post.title', 'post.author', 'post.subtitle'],
+    }
+  );
 
-//   // TODO
-// };
+  const posts = responsePosts.results.map(post => {
+    return {
+      uid: post.uid,
+      first_publication_date: post.first_publication_date,
+      data: {
+        title: post.data.title,
+        subtitle: post.data.subtitle,
+        author: post.data.author,
+      },
+    };
+  });
+  const postsPagination = {
+    next_page: responsePosts.next_page,
+    results: posts,
+  };
+
+  return {
+    props: {
+      postsPagination,
+    },
+  };
+};

@@ -1,6 +1,5 @@
 .headerContainer {
   height: 5rem;
-  border-bottom: 1px solid var(--highlight);
 }
 
 .headerContent {
@@ -15,5 +14,7 @@
     top: 0;
     bottom: 0;
     margin: auto;
+
+    cursor: pointer;
   }
 }
